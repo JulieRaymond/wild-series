@@ -13,7 +13,16 @@ Encore
     .setPublicPath('/build')
     // only needed for CDN's or subdirectory deploy
     //.setManifestKeyPrefix('build/')
-
+    .addRule({
+        test: /\.(png|ico)$/,
+        use: [{
+            loader: 'file-loader',
+            options: {
+                name: '[name].[ext]',
+                outputPath: 'images/', // Répertoire de sortie dans public/build
+            },
+        }],
+    })
     /*
      * ENTRY CONFIG
      *
