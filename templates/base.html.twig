@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html>
-    <head>
+<html lang="fr">
+     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('build/images/favicon-32x32.png') }}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('build/images/favicon-16x16.png') }}">
-        <link rel="icon" href="{{ asset('build/images/favicon.ico') }}" />
+        <link rel="icon" type="image/png" href="{{ asset('build/images/fav.png') }}">
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
