@@ -85,6 +85,18 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
 
         // Appliquer les changements dans la base de données
         $manager->flush();
+
+        // Ajouter des références pour les Programmes créés
+        $this->addReference('program_WalkingDead', $program1);
+        $this->addReference('program_BreakingBad', $program2);
+        $this->addReference('program_StrangerThings', $program3);
+        $this->addReference('program_Friends', $program4);
+        $this->addReference('program_Inception', $program5);
+        $this->addReference('program_TheDarkKnight', $program6);
+        $this->addReference('program_PulpFiction', $program7);
+        $this->addReference('program_TheMatrix', $program8);
+        $this->addReference('program_ForrestGump', $program9);
+        $this->addReference('program_ToyStory', $program10);
     }
     public function getDependencies() :array
     {
