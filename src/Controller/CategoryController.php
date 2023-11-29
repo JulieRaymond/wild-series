@@ -26,7 +26,7 @@ class CategoryController extends AbstractController
         $category = $categoryRepository->findOneBy(['name' => $categoryName]);
 
         if (!$category) {
-            throw $this->createNotFoundException("No category named {$categoryName} found.");
+            return $this->render('error/404.html.twig', [], new Response('', 404));
         }
 
         $programs = $programRepository->findBy(
