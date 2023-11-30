@@ -13,12 +13,7 @@ class CategoryFixtures extends Fixture
         'Comédie',
         'Drame',
         'Horreur',
-        'Science-fiction',
-        'Aventure',
-        'Romance',
-        'Fantaisie',
-        'Thriller',
-        'Animation'
+        'Science-fiction'
     ];
 
     public function load(ObjectManager $manager): void
@@ -30,7 +25,6 @@ class CategoryFixtures extends Fixture
             $this->addReference('category_' . $categoryName, $category);
 
         }
-
         $manager->flush();
     }
 }

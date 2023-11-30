@@ -16,11 +16,6 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
         $categoryDrama = $this->getReference('category_Drame');
         $categoryHorror = $this->getReference('category_Horreur');
         $categorySciFi = $this->getReference('category_Science-fiction');
-        $categoryAdventure = $this->getReference('category_Aventure');
-        $categoryRomance = $this->getReference('category_Romance');
-        $categoryFantasy = $this->getReference('category_Fantaisie');
-        $categoryThriller = $this->getReference('category_Thriller');
-        $categoryAnimation = $this->getReference('category_Animation');
 
         // Créer des instances de Program avec différentes catégories
         $program1 = new Program();
@@ -47,41 +42,12 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
         $program4->setCategory($categoryComedy);
         $manager->persist($program4);
 
+
         $program5 = new Program();
-        $program5->setTitle('Inception');
-        $program5->setSynopsis('Un voleur de rêves doit accomplir un dernier travail');
-        $program5->setCategory($categoryAdventure);
+        $program5->setTitle('The Dark Knight');
+        $program5->setSynopsis('Batman affronte le Joker pour protéger Gotham City');
+        $program5->setCategory($categoryAction);
         $manager->persist($program5);
-
-        $program6 = new Program();
-        $program6->setTitle('The Dark Knight');
-        $program6->setSynopsis('Batman affronte le Joker pour protéger Gotham City');
-        $program6->setCategory($categoryAction);
-        $manager->persist($program6);
-
-        $program7 = new Program();
-        $program7->setTitle('Pulp Fiction');
-        $program7->setSynopsis('Les histoires de plusieurs criminels interconnectées à Los Angeles');
-        $program7->setCategory($categoryThriller);
-        $manager->persist($program7);
-
-        $program8 = new Program();
-        $program8->setTitle('The Matrix');
-        $program8->setSynopsis('Un pirate informatique découvre la vérité sur la réalité');
-        $program8->setCategory($categoryFantasy);
-        $manager->persist($program8);
-
-        $program9 = new Program();
-        $program9->setTitle('Forrest Gump');
-        $program9->setSynopsis('La vie extraordinaire de Forrest Gump');
-        $program9->setCategory($categoryRomance);
-        $manager->persist($program9);
-
-        $program10 = new Program();
-        $program10->setTitle('Toy Story');
-        $program10->setSynopsis('Les jouets prennent vie quand les humains ne sont pas là');
-        $program10->setCategory($categoryAnimation);
-        $manager->persist($program10);
 
         // Appliquer les changements dans la base de données
         $manager->flush();
@@ -91,12 +57,7 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
         $this->addReference('program_BreakingBad', $program2);
         $this->addReference('program_StrangerThings', $program3);
         $this->addReference('program_Friends', $program4);
-        $this->addReference('program_Inception', $program5);
-        $this->addReference('program_TheDarkKnight', $program6);
-        $this->addReference('program_PulpFiction', $program7);
-        $this->addReference('program_TheMatrix', $program8);
-        $this->addReference('program_ForrestGump', $program9);
-        $this->addReference('program_ToyStory', $program10);
+        $this->addReference('program_TheDarkKnight', $program5);
     }
     public function getDependencies() :array
     {
