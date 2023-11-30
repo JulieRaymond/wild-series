@@ -57,6 +57,10 @@ main{
   color: var(--white);
 }
 
+.dropdown-item:hover{
+  background-color: black;
+}
+
 /* Styles pour le bouton du dropdown */
 .navbar-nav .dropdown-toggle {
   color: var(--white);

@@ -11,9 +11,7 @@
                             Catégories
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Comédie</a></li>
-                            <li><a class="dropdown-item" href="#">Thriller</a></li>
+                            {{ render(controller('App\\Controller\\CategoryController::showCategoryLinks')) }}
                         </ul>
                     </li>
                     <li class="nav-item dropdown">

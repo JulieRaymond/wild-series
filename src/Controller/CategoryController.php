@@ -40,4 +40,13 @@ class CategoryController extends AbstractController
             'programs' => $programs,
         ]);
     }
+    #[Route('/show_categories_links/', name: 'show_categories_links', methods: ['GET'])]
+    public function showCategoryLinks(CategoryRepository $categoryRepository): Response
+    {
+        $categories = $categoryRepository->findAll();
+
+        return $this->render('category/_categories_links.html.twig', [
+            'categories_links' => $categories,
+        ]);
+    }
 }
