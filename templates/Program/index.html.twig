@@ -7,6 +7,7 @@
   {% for program in programs %}
     <div class="card mb-3">
       <div class="card-body">
+        <img class="card-img" alt="image" src="{{ program.poster }}">
         <h2 class="card-title">{{ loop.index }} - {{ program.title }} </h2>
         <h3 class="card-category"> Catégorie : {{ program.category.name }}</h3>
         <p class="card-text">{{ program.synopsis }}</p>
