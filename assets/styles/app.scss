@@ -10,9 +10,9 @@
   --h1-family : 'Roboto', sans-serif;
   --h2-family : 'Roboto Condensed', sans-serif;
   --text-family : 'Hind Madurai', sans-serif;
-  --h1-size: 24px;
-  --h2-size: 20px;
-  --text-size: 18px;
+  --h1-size: 28px;
+  --h2-size: 24px;
+  --text-size: 20px;
 }
 
 /* Styles pour les titres h1 dans la navbar */
@@ -129,4 +129,52 @@ main{
 
 .series-title{
   margin-bottom: 2rem;
+}
+
+.home-description{
+  margin : 2rem 5rem;
+  font-size: var(--text-size);
+  font-family: var(--text-family);
+}
+
+.homepageImg{
+  width: 100%;
+}
+
+.bg-body-tertiary {
+  --bs-bg-opacity: 1;
+  background-color: var(--dark-green) !important;
+  font-size: var(--h2-size);
+  font-family: var(--h2-family);
+  color: var(--white);
+  margin-top : auto;
+}
+.text-body {
+  list-style-type: none;
+  font-size: var(--h2-size);
+  font-family: var(--h2-family);
+  text-decoration: none;
+}
+
+.element {
+  border: 0px solid rgba(100, 100, 100, 1);
+  border-radius: 5px;
+  box-shadow: 15px 21px 8px 2px rgba(36, 36, 36, 0.3);
+  transition: box-shadow 344ms ease-out;
+  margin: 3rem 15rem;
+  background-color: var(--dark-green);
+  color: white;
+}
+
+.element:hover {
+  box-shadow: 30px 30px 17px 2px rgba(0, 0, 0, 0.3);
+}
+
+.text {
+  font: normal normal 27px/1.8 "roboto";
+  letter-spacing: 7px;
+}
+
+#navbarSupportedContent{
+  margin-left : 5rem;
 }
