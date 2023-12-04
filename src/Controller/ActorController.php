@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Actor;
+use App\Repository\ActorRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,6 +23,16 @@ class ActorController extends AbstractController
     {
         return $this->render('actor/show.html.twig', [
             'actor' => $actor,
+        ]);
+    }
+
+    #[Route('/actor/show-actor-links', name: 'show_actor_links', methods: ['GET'])]
+    public function showActorLinks(ActorRepository $actorRepository): Response
+    {
+        $actors = $actorRepository->findAll();
+
+        return $this->render('actor/_actor_links.html.twig', [
+            'actors' => $actors,
         ]);
     }
 }
