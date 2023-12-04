@@ -4,6 +4,7 @@
 
 {% block body %}
   <h1 class="series-title">Toutes les séries</h1>
+  <a href="{{ path('program_new') }}">Ajoute une série</a>
   {% for program in programs %}
     <div class="card mb-3">
       <div class="card-body">
