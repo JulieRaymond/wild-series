@@ -14,7 +14,7 @@
                             {{ render(controller('App\\Controller\\CategoryController::showCategoryLinks')) }}
                         </ul>
                     </li>
-                    <li class="nav-item dropdown">
+                    {#<li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Acteurs
                         </a>
@@ -22,6 +22,14 @@
                             <li><a class="dropdown-item" href="#">Acteur 1</a></li>
                             <li><a class="dropdown-item" href="#">Acteur 2</a></li>
                             <li><a class="dropdown-item" href="#">Acteur 3</a></li>
+                        </ul>
+                    </li>#}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownActors" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Acteurs
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownActors">
+                            {{ render(controller('App\\Controller\\ActorController::showActorLinks')) }}
                         </ul>
                     </li>
                     <li class="nav-item">
