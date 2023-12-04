@@ -33,6 +33,10 @@ class SeasonController extends AbstractController
             $entityManager->persist($season);
             $entityManager->flush();
 
+            //message Flash de succès
+            $this->addFlash('success', 'Bravo ! La nouvelle saison a bien été créée.');
+
+            // Redirige vers la liste des saisons
             return $this->redirectToRoute('app_season_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -59,6 +63,9 @@ class SeasonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            //message Flash de succès
+            $this->addFlash('success', 'Bravo ! La saison a bien été édité.');
+
             return $this->redirectToRoute('app_season_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -74,6 +81,9 @@ class SeasonController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$season->getId(), $request->request->get('_token'))) {
             $entityManager->remove($season);
             $entityManager->flush();
+
+            // Message Flash de danger
+            $this->addFlash('danger', 'La saison a bien été supprimée.');
         }
 
         return $this->redirectToRoute('app_season_index', [], Response::HTTP_SEE_OTHER);
