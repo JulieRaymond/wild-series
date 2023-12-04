@@ -97,6 +97,9 @@ class ProgramController extends AbstractController
             $entityManager->persist($program);
             $entityManager->flush();
 
+            //message Flash de succès
+            $this->addFlash('success', 'Bravo ! La série a été créée avec succès.');
+
             // Redirige vers la liste des programmes
             return $this->redirectToRoute('program_index');
         }

@@ -17,6 +17,19 @@
         {% include '_navbar.html.twig' %}
         </header>
         <main>
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            {% for message in app.flashes('danger') %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
         {% block body %}{% endblock %}
         </main>
         <footer class="bg-body-tertiary text-center text-lg-start">
