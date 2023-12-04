@@ -66,9 +66,12 @@ class ProgramController extends AbstractController
 namespace App\Controller;
 
 use App\Entity\Program;
+use App\Form\ProgramType;
 use App\Repository\ProgramRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/program', name: 'program_')]
@@ -82,6 +85,28 @@ class ProgramController extends AbstractController
             'programs' => $programs,
         ]);
     }
+
+    #[Route('/new', name: 'new')]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $program = new Program();
+        $form = $this->createForm(ProgramType::class, $program);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($program);
+            $entityManager->flush();
+
+            // Redirige vers la liste des programmes
+            return $this->redirectToRoute('program_index');
+        }
+
+        // Rendre le formulaire
+        return $this->render('program/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
 
     #[Route('/{id<\d+>}', name: 'show', methods: ['GET'])]
     public function show(Program $program): Response

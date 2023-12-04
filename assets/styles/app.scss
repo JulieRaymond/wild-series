@@ -242,3 +242,18 @@ main{
   border-radius: 10px;
   box-shadow: 25px -19px 10px 2px var(--light-green);
 }
+
+.list-group{
+  align-items: center;
+}
+.list-group-item {
+  background-color: var(--dark-green);
+  color : var(--white);
+  font-size: var(--h2-size);
+  font-family: var(--h2-family);
+  margin : 1rem 0;
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--black);
+}

@@ -3,18 +3,20 @@
 {% block title %}All Categories{% endblock %}
 
 {% block body %}
-    <h1>All Categories:</h1>
-    <ul>
-        {% for category in categories %}
-            <li>
-                <a href="{{ path('category_show', { categoryName: category.name }) }}">{{ category.name }}</a>
-            </li>
-        {% else %}
-            <li>No categories found.</li>
-        {% endfor %}
-    </ul>
+    <div class="container mt-5">
+        <h1 class="mb-4">Toutes les catégories:</h1>
+        <ul class="list-group">
+            {% for category in categories %}
+                <li class="list-group-item">
+                    <a href="{{ path('category_show', { categoryName: category.name }) }}" class="text-decoration-none">{{ category.name }}</a>
+                </li>
+            {% else %}
+                <li class="list-group-item">No categories found.</li>
+            {% endfor %}
+        </ul>
 
-    <a href="{{ path('app_index') }}">
-        Back to Home
-    </a>
+        <a href="{{ path('app_index') }}" class="btn btn-primary mt-3">
+            Back to Home
+        </a>
+    </div>
 {% endblock %}
