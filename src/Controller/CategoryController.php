@@ -10,6 +10,7 @@ use App\Repository\CategoryRepository;
 use App\Repository\ProgramRepository;
 use App\Form\CategoryType;
 use App\Entity\Category;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/category', name: 'category_')]
 class CategoryController extends AbstractController
