@@ -10,10 +10,12 @@
             <h2 class="card-title">{{ program.title }} </h2><br>
             <h3 class="card-category"> Catégorie : {{ program.category.name }}</h3>
             <p class="card-text">{{ program.synopsis }}</p><br>
+            <p class="card-text">Durée: {{ programDuration }}</p>
             <h2 class="card-title">Saisons</h2>
             <ul class="ul-program">
                 {% for season in program.seasons %}
-                    <li><a class="link-season" href="{{ path('program_season_show', {'programId': program.id, 'seasonId': season.id}) }}">Saison -> {{ season.number }}</a></li>
+                    <a class="link-season" href="{{ path('program_season_show', {'slug': program.slug, 'seasonId': season.id}) }}">Saison -> {{ season.number }}</a>
+                <br>
                 {% endfor %}
             </ul>
 

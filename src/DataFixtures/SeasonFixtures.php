@@ -33,6 +33,7 @@ $episode->setTitle($faker->sentence);
 $episode->setNumber($j);
 $episode->setSynopsis($faker->paragraph);
 $episode->setSeason($season);
+$episode->setDuration($faker->numberBetween(20, 60));
 
 $manager->persist($episode);
 }

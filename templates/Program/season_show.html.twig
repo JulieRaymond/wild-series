@@ -29,7 +29,7 @@
         </div>
     {% endfor %}
 
-    <a href="{{ path('program_show', {'id': program.id}) }}" class="btn btn-secondary">
+    <a href="{{ path('program_show', {'slug': program.slug}) }}" class="btn btn-secondary">
         Retour à la série
     </a>
 {% endblock %}

@@ -41,6 +41,7 @@ class CategoryController extends AbstractController
         }
 
         // Render the form
+        //redirectToRoute à la place : A FAIRE
         return $this->render('category/new.html.twig', [
             'form' => $form,
         ]);
