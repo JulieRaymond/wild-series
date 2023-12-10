@@ -181,7 +181,7 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    #[Route('/{programId<\d+>}/season/{seasonId<\d+>}/episode/{episodeId<\d+>}', name: 'episode_show', methods: ['GET'])]
+    /*#[Route('/{programId<\d+>}/season/{seasonId<\d+>}/episode/{episodeId<\d+>}', name: 'episode_show', methods: ['GET'])]
     public function showEpisode(int $programId, int $seasonId, int $episodeId, ProgramRepository $programRepository): Response
     {
         $program = $programRepository->findOneBy(['id' => $programId]);
@@ -217,6 +217,45 @@ class ProgramController extends AbstractController
             'season' => $season,
             'episode' => $episode,
         ]);
+    }*/
+
+    #[Route('/{slug}/season/{seasonId}/episode/{episodeId}', name: 'episode_show', methods: ['GET'])]
+    public function showEpisode(string $slug, int $seasonId, int $episodeId, ProgramRepository $programRepository): Response
+    {
+        $program = $programRepository->findOneBy(['slug' => $slug]);
+
+        if (!$program) {
+            throw $this->createNotFoundException(
+                'No program with slug: ' . $slug . ' found in program\'s table.'
+            );
+        }
+
+        $season = $program->getSeasons()->filter(function ($season) use ($seasonId) {
+            return $season->getId() == $seasonId;
+        })->first();
+
+        if (!$season) {
+            throw $this->createNotFoundException(
+                'No season with id: ' . $seasonId . ' found in program\'s seasons.'
+            );
+        }
+
+        $episode = $season->getEpisodes()->filter(function ($episode) use ($episodeId) {
+            return $episode->getId() == $episodeId;
+        })->first();
+
+        if (!$episode) {
+            throw $this->createNotFoundException(
+                'No episode with id: ' . $episodeId . ' found in season\'s episodes.'
+            );
+        }
+
+        return $this->render('program/episode_show.html.twig', [
+            'program' => $program,
+            'season' => $season,
+            'episode' => $episode,
+        ]);
     }
+
 
 }
