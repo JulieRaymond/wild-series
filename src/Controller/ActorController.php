@@ -12,9 +12,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class ActorController extends AbstractController
 {
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(ActorRepository $actorRepository): Response
     {
+        $actors = $actorRepository->findAll();
+
         return $this->render('Actor/index.html.twig', [
+            'actors' => $actors,
         ]);
     }
 

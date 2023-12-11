@@ -12,7 +12,7 @@
         <h2 class="card-title">{{ loop.index }} - {{ program.title }} </h2>
         <h3 class="card-category"> Catégorie : {{ program.category.name }}</h3>
         <p class="card-text">{{ program.synopsis }}</p>
-        <a href="{{ path("program_show", { id: program.id }) }}" class="btn btn-primary">Voir la fiche</a>
+        <a href="{{ path("program_show", { slug: program.slug }) }}" class="btn btn-primary">Voir la fiche</a>
       </div>
     </div>
   {% else %}

@@ -20,7 +20,7 @@
         <div class="card mb-3">
             <div class="card-bodyEpisode">
                 <h2 class="card-title">
-                    <a href="{{ path('program_episode_show', {'programId': program.id, 'seasonId': season.id, 'episodeId': episode.id}) }}">
+                    <a href="{{ url('program_episode_show', {'slug': program.slug, 'seasonId': season.id, 'episodeSlug': episode.slug}) }}">
                         Épisode {{ episode.number }} - {{ episode.title }}
                     </a>
                 </h2>
@@ -29,7 +29,7 @@
         </div>
     {% endfor %}
 
-    <a href="{{ path('program_show', {'id': program.id}) }}" class="btn btn-secondary">
+    <a href="{{ path('program_show', {'slug': program.slug}) }}" class="btn btn-secondary">
         Retour à la série
     </a>
 {% endblock %}

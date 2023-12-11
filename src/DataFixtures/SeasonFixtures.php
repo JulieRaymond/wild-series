@@ -1,4 +1,5 @@
 <?php
+
 namespace App\DataFixtures;
 
 use App\Entity\Season;
@@ -7,45 +8,59 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Faker\Factory;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class SeasonFixtures extends Fixture implements DependentFixtureInterface
 {
-public function load(ObjectManager $manager): void
-{
-$faker = Factory::create();
+    private $slugger;
 
-    $programs = $manager->getRepository(\App\Entity\Program::class)->findAll();
+    public function __construct(SluggerInterface $slugger)
+    {
+        $this->slugger = $slugger;
+    }
 
-foreach ($programs as $program) {
-for ($i = 1; $i <= 5; $i++) {
-$season = new Season();
-$season->setNumber($i);
-$season->setYear($faker->year());
-$season->setDescription($faker->paragraph);
-$season->setProgram($program);
+    public function load(ObjectManager $manager): void
+    {
+        $faker = Factory::create();
 
-$manager->persist($season);
+        $programs = $manager->getRepository(\App\Entity\Program::class)->findAll();
 
-// Create 10 episodes for each season
-for ($j = 1; $j <= 10; $j++) {
-$episode = new Episode();
-$episode->setTitle($faker->sentence);
-$episode->setNumber($j);
-$episode->setSynopsis($faker->paragraph);
-$episode->setSeason($season);
+        foreach ($programs as $program) {
+            for ($i = 1; $i <= 5; $i++) {
+                $season = new Season();
+                $season->setNumber($i);
+                $season->setYear($faker->year());
+                $season->setDescription($faker->paragraph);
+                $season->setProgram($program);
 
-$manager->persist($episode);
-}
-}
-}
+                $manager->persist($season);
 
-$manager->flush();
-}
+                // Create 10 episodes for each season
+                for ($j = 1; $j <= 10; $j++) {
+                    $episode = new Episode();
+                    $episode->setTitle($faker->sentence);
+                    $episode->setNumber($j);
+                    $episode->setSynopsis($faker->paragraph);
+                    $episode->setSeason($season);
+                    $episode->setDuration($faker->numberBetween(20, 60));
 
-public function getDependencies(): array
-{
-return [
-ProgramFixtures::class,
-];
-}
+                    // Generate slug using the SluggerInterface
+                    $slug = $this->slugger->slug($episode->getTitle())->lower();
+                    $slug = str_replace([' ', '_'], '-', $slug);
+                    $episode->setSlug($slug);
+
+                    $manager->persist($episode);
+                }
+            }
+        }
+
+        $manager->flush();
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            ProgramFixtures::class,
+        ];
+    }
 }

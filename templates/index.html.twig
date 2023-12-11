@@ -3,14 +3,7 @@
 {% block title %}Wild Series{% endblock %}
 
 {% block body %}
-    <div class="element text">Explorez Wild Series: <br> votre destination ultime pour des séries captivantes!</div>
-    {#<p class="home-description">Bienvenue sur Wild Series, votre destination ultime pour explorer et découvrir une vaste collection de séries captivantes ! Plongez dans l'univers passionnant de la télévision et explorez une variété de genres allant de l'action et la comédie au drame, à l'horreur et à la science-fiction.
-        <br><br>
-        Notre site propose une sélection soigneusement curated de séries télévisées, allant des classiques intemporels aux dernières sorties. Parcourez notre catalogue diversifié pour trouver des joyaux cachés, des épisodes incontournables et des saisons qui vous tiendront en haleine du début à la fin.
-        <br><br>
-        Chaque série est accompagnée d'informations détaillées, y compris des résumés captivants, des détails sur le casting et des critiques pour vous aider à choisir la prochaine série à ajouter à votre liste de visionnage.
-        <br><br>
-        Explorez, découvrez et plongez dans le monde fascinant des séries télévisées dès aujourd'hui. Wild Series - là où l'aventure télévisuelle prend vie !
-    </p>#}
-
+    <a class="nav-link dropdown-toggle" href="{{ path('program_index') }}">
+        <div class="element text">Explorez Wild Series: <br> votre destination ultime pour des séries captivantes!</div>
+    </a>
 {% endblock %}

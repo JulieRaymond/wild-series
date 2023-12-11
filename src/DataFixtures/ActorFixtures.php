@@ -7,9 +7,16 @@ use App\Entity\Program;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ActorFixtures extends Fixture implements DependentFixtureInterface
 {
+    private SluggerInterface $slugger;
+
+    public function __construct(SluggerInterface $slugger)
+    {
+        $this->slugger = $slugger;
+    }
     public function load(ObjectManager $manager): void
     {
         $faker = \Faker\Factory::create();
@@ -18,6 +25,12 @@ class ActorFixtures extends Fixture implements DependentFixtureInterface
         for ($i = 0; $i < 10; $i++) {
             $actor = new Actor();
             $actor->setName($faker->name);
+            $actor->setPicture($faker->imageUrl(640, 480, 'people', true));
+
+            // Utilisation du SluggerInterface pour générer un slug à partir du nom de l'acteur
+            $slug = $this->slugger->slug($actor->getName())->lower();
+            $actor->setSlug($slug);
+
             $manager->persist($actor);
 
             // Ajout aléatoire de 3 programmes à chaque acteur
