@@ -46,7 +46,7 @@ class CategoryController extends AbstractController
             'form' => $form,
         ]);
     }
-
+/*
     #[Route('/{categoryName}', name: 'show')]
     public function show(string $categoryName, CategoryRepository $categoryRepository, ProgramRepository $programRepository): Response
     {
@@ -67,6 +67,29 @@ class CategoryController extends AbstractController
             'programs' => $programs,
         ]);
     }
+    */
+    #[Route('/{categoryName}', name: 'show')]
+    public function show(string $categoryName, CategoryRepository $categoryRepository, ProgramRepository $programRepository): Response
+    {
+        $category = $categoryRepository->findOneBy(['name' => $categoryName]);
+
+        if (!$category) {
+            return $this->render('error/404.html.twig', [], new Response('', 404));
+        }
+
+        $programs = $programRepository->findBy(
+            ['category' => $category],
+            ['id' => 'DESC']
+        );
+
+        return $this->render('category/show.html.twig', [
+            'category' => $category,
+            'programs' => $programs,
+        ]);
+    }
+
+
+
     #[Route('/show_categories_links/', name: 'show_categories_links', methods: ['GET'])]
     public function showCategoryLinks(CategoryRepository $categoryRepository): Response
     {
