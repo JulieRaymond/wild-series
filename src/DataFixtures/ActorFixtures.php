@@ -25,6 +25,7 @@ class ActorFixtures extends Fixture implements DependentFixtureInterface
         for ($i = 0; $i < 10; $i++) {
             $actor = new Actor();
             $actor->setName($faker->name);
+            $actor->setPicture($faker->imageUrl(640, 480, 'people', true));
 
             // Utilisation du SluggerInterface pour générer un slug à partir du nom de l'acteur
             $slug = $this->slugger->slug($actor->getName())->lower();
