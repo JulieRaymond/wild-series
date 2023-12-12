@@ -13,6 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class ProgramType extends AbstractType
 {
@@ -35,7 +36,14 @@ class ProgramType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('poster', TextType::class)
+
+            //quête 22 VICH
+            /*->add('poster', TextType::class)*/
+            ->add('posterFile', VichFileType::class, [
+                'required'      => false,
+                'allow_delete'  => true,
+                'download_uri' => true,])
+
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',
