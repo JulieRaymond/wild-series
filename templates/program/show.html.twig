@@ -6,7 +6,8 @@
     <h1 class="series-title">{{ program.title }}</h1>
     <div class="card mb-3">
         <div class="card-body">
-            <img class="card-img" alt="image" src="{{ program.poster }}">
+{#            <img class="card-img" alt="image" src="{{ program.poster }}">#}
+            <img class="card-img" alt="image" src="{{ vich_uploader_asset(program) }}">
             <h2 class="card-title">{{ program.title }} </h2><br>
             <h3 class="card-category"> Catégorie : {{ program.category.name }}</h3>
             <p class="card-text">{{ program.synopsis }}</p><br>

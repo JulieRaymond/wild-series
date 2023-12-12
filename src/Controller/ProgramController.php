@@ -135,4 +135,38 @@ class ProgramController extends AbstractController
         ]);
     }
 
+    #[Route('/{slug}/edit', name: 'app_program_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Program $program, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(ProgramType::class, $program);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            // Message Flash de succès
+            $this->addFlash('success', 'Bravo ! La série a été éditée avec succès.');
+
+            return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('program/edit.html.twig', [
+            'program' => $program,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/{slug}/delete', name: 'app_program_delete', methods: ['POST'])]
+    public function delete(Request $request, Program $program, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$program->getSlug(), $request->request->get('_token'))) {
+            $entityManager->remove($program);
+            $entityManager->flush();
+
+            // Message Flash de danger
+            $this->addFlash('danger', 'La série a bien été supprimée.');
+        }
+
+        return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
+    }
 }

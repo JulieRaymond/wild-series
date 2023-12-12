@@ -7,7 +7,8 @@
 {% block body %}
     <div class="card mb-3">
         <div class="card-body">
-            <img class="card-img align-self-start mr-3" src="{{ program.poster }}" alt="{{ program.title }} poster">
+{#            <img class="card-img align-self-start mr-3" src="{{ program.poster }}" alt="{{ program.title }} poster">#}
+            <img class="card-img align-self-start mr-3" alt="image" src="{{ vich_uploader_asset(program) }}">
             <div class="media-body">
                 <h1 class="series-title mt-0">{{ program.title }} - Saison {{ season.number }}</h1>
                 <p>{{ season.description }}</p>
