@@ -4,7 +4,7 @@
 
 {% block body %}
   <h1 class="series-title">Toutes les séries</h1>
-  <a href="{{ path('program_new') }}">Ajoute une série</a>
+  <a class="btn btn-secondary" href="{{ path('program_new') }}">Ajoute une série</a>
   {% for program in programs %}
     <div class="card mb-3">
       <div class="card-body">
@@ -19,7 +19,7 @@
     Aucune série trouvée.
   {% endfor %}
 
-  <a href="{{ path('app_index') }}" class="btn btn-secondary">
+  <a class="btn btn-secondary" href="{{ path('app_index') }}">
     Retour à l'accueil
   </a>
 {% endblock %}

@@ -3,13 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\Episode;
+use App\Entity\Program;
 use App\Form\EpisodeType;
 use App\Repository\EpisodeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/episode')]
 class EpisodeController extends AbstractController
@@ -22,19 +27,38 @@ class EpisodeController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     #[Route('/new', name: 'app_episode_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, MailerInterface $mailer): Response
     {
         $episode = new Episode();
         $form = $this->createForm(EpisodeType::class, $episode);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            // Utilisation du SluggerInterface pour générer un slug à partir du titre
+            $slug = $slugger->slug($episode->getTitle())->lower();
+            $slug = str_replace([' ', '_'], '-', $slug);
+            $episode->setSlug($slug);
+
             $entityManager->persist($episode);
             $entityManager->flush();
 
             //message Flash de succès
             $this->addFlash('success', 'Bravo ! L\'épisode a été crée avec succès.');
+
+            // Envoi un email lorsque la création de la série est bien valide
+            $email = (new Email())
+                ->from($this->getParameter('mailer_from'))
+                ->to('raymond.julie86@gmail.com')
+                ->subject('Un nouvel épisode vient d\'être publié !')
+                ->html($this->renderView('Episode/newEpisodeEmail.html.twig', ['episode' => $episode,
+                'program' => $episode->getSeason()->getProgram()]));
+
+            $mailer->send($email);
 
             // Redirige vers la liste des épisodes
             return $this->redirectToRoute('app_episode_index', [], Response::HTTP_SEE_OTHER);
