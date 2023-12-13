@@ -223,7 +223,4 @@ class Program
         return $this->posterFile;
     }
 
-
-
-
 }

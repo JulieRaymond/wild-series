@@ -64,7 +64,6 @@ class ProgramController extends AbstractController
         ]);
     }
 
-
     #[Route('/{slug}/season/{seasonId}', name: 'season_show', methods: ['GET'])]
     public function showSeason(string $slug, int $seasonId, ProgramRepository $programRepository): Response
     {
