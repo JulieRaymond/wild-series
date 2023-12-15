@@ -12,7 +12,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class SeasonFixtures extends Fixture implements DependentFixtureInterface
 {
-    private $slugger;
+    private SluggerInterface $slugger;
 
     public function __construct(SluggerInterface $slugger)
     {

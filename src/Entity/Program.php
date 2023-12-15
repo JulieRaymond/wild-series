@@ -41,6 +41,10 @@ class Program
     // Tu peux d’ailleurs voir que l’attribut ORM column n’est pas spécifié.
     // Car on ne rajoute pas de données de type file en bdd.
     #[Vich\UploadableField(mapping: 'poster_file', fileNameProperty: 'poster')]
+    #[Assert\File(
+        maxSize: '1M',
+        mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    )]
     private ?File $posterFile = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -199,7 +203,7 @@ class Program
 
         return $this;
     }
-    /*public function setPosterFile(File $image = null): Program
+    /*public function setPosterFile(File $image = null): program
     {
         $this->posterFile = $image;
         return $this;
@@ -218,8 +222,5 @@ class Program
     {
         return $this->posterFile;
     }
-
-
-
 
 }
