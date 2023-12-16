@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Service\ProgramDuration;
+use App\Entity\Comment;
+use App\Form\CommentType;
 
 #[Route('/program', name: 'program_')]
 class ProgramController extends AbstractController
@@ -64,6 +66,41 @@ class ProgramController extends AbstractController
         ]);
     }
 
+    #[Route('/{slug}/edit', name: 'app_program_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Program $program, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(ProgramType::class, $program);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            // Message Flash de succès
+            $this->addFlash('success', 'Bravo ! La série a été éditée avec succès.');
+
+            return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('program/edit.html.twig', [
+            'program' => $program,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/{slug}/delete', name: 'app_program_delete', methods: ['POST'])]
+    public function delete(Request $request, Program $program, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$program->getSlug(), $request->request->get('_token'))) {
+            $entityManager->remove($program);
+            $entityManager->flush();
+
+            // Message Flash de danger
+            $this->addFlash('danger', 'La série a bien été supprimée.');
+        }
+
+        return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
+    }
+
     #[Route('/{slug}/season/{seasonId}', name: 'season_show', methods: ['GET'])]
     public function showSeason(string $slug, int $seasonId, ProgramRepository $programRepository): Response
     {
@@ -91,7 +128,7 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    #[Route('/{slug}/season/{seasonId}/episode/{episodeSlug}', name: 'episode_show', methods: ['GET'])]
+ /*   #[Route('/{slug}/season/{seasonId}/episode/{episodeSlug}', name: 'episode_show', methods: ['GET'])]
     public function showEpisode(string $slug, int $seasonId, string $episodeSlug, ProgramRepository $programRepository, SluggerInterface $slugger): Response
     {
         $program = $programRepository->findOneBy(['slug' => $slug]);
@@ -132,40 +169,68 @@ class ProgramController extends AbstractController
             'season' => $season,
             'episode' => $episode,
         ]);
-    }
-
-    #[Route('/{slug}/edit', name: 'app_program_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Program $program, EntityManagerInterface $entityManager): Response
+    }*/
+    #[Route('/{slug}/season/{seasonId}/episode/{episodeSlug}', name: 'episode_show', methods: ['GET', 'POST'])]
+    public function showEpisode(string $slug, int $seasonId, string $episodeSlug, ProgramRepository $programRepository, Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
-        $form = $this->createForm(ProgramType::class, $program);
-        $form->handleRequest($request);
+        $program = $programRepository->findOneBy(['slug' => $slug]);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            // Message Flash de succès
-            $this->addFlash('success', 'Bravo ! La série a été éditée avec succès.');
-
-            return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
+        if (!$program) {
+            throw $this->createNotFoundException(
+                'No program with slug: ' . $slug . ' found in program\'s table.'
+            );
         }
 
-        return $this->render('program/edit.html.twig', [
+        $season = $program->getSeasons()->filter(function ($season) use ($seasonId) {
+            return $season->getId() == $seasonId;
+        })->first();
+
+        if (!$season) {
+            throw $this->createNotFoundException(
+                'No season with id: ' . $seasonId . ' found in program\'s seasons.'
+            );
+        }
+
+        $episode = $season->getEpisodes()->filter(function ($episode) use ($episodeSlug) {
+            return $episode->getSlug() == $episodeSlug;
+        })->first();
+
+        if (!$episode) {
+            throw $this->createNotFoundException(
+                'No episode with slug: ' . $episodeSlug . ' found in season\'s episodes.'
+            );
+        }
+
+        // Utilisation du SluggerInterface pour générer un slug à partir du titre de l'épisode
+        $episodeSlug = $slugger->slug($episode->getTitle())->lower();
+        $episodeSlug = str_replace([' ', '_'], '-', $episodeSlug);
+        $episode->setSlug($episodeSlug);
+
+        // Création d'une nouvelle instance de Comment
+        $comment = new Comment();
+
+        // Création du formulaire de commentaire
+        $commentForm = $this->createForm(CommentType::class, $comment);
+        $commentForm->handleRequest($request);
+
+        // Si le formulaire est soumis et valide, enregistrez le commentaire
+        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            // Associez le commentaire à l'auteur, à l'épisode et enregistrez-le en base de données
+            $comment->setAuthor($this->getUser());
+            $comment->setEpisode($episode);
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            // Ajoutez un message flash pour indiquer que le commentaire a été ajouté avec succès
+            $this->addFlash('success', 'Votre commentaire a été ajouté avec succès.');
+        }
+
+        // Rendre la vue avec le formulaire de commentaire
+        return $this->render('program/episode_show.html.twig', [
             'program' => $program,
-            'form' => $form->createView(),
+            'season' => $season,
+            'episode' => $episode,
+            'commentForm' => $commentForm->createView(),
         ]);
-    }
-
-    #[Route('/{slug}/delete', name: 'app_program_delete', methods: ['POST'])]
-    public function delete(Request $request, Program $program, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$program->getSlug(), $request->request->get('_token'))) {
-            $entityManager->remove($program);
-            $entityManager->flush();
-
-            // Message Flash de danger
-            $this->addFlash('danger', 'La série a bien été supprimée.');
-        }
-
-        return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
     }
 }

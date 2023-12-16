@@ -1,3 +1,4 @@
+{#
 {% extends 'base.html.twig' %}
 
 {% block title %}
@@ -10,6 +11,45 @@
             <h1 class="series-title">{{ program.title }} - Saison {{ season.number }} - Épisode {{ episode.number }}</h1>
             <h2 class="card-title">{{ episode.title }}</h2>
             <p>{{ episode.synopsis }}</p>
+        </div>
+    </div>
+
+    <a href="{{ path('program_season_show', {'slug': program.slug, 'seasonId': season.id}) }}" class="btn btn-secondary">
+        Retour à la saison
+    </a>
+{% endblock %}
+#}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ program.title }} - Saison {{ season.number }} - Épisode {{ episode.number }}
+{% endblock %}
+
+{% block body %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h1 class="series-title">{{ program.title }} - Saison {{ season.number }} - Épisode {{ episode.number }}</h1>
+            <h2 class="card-title">{{ episode.title }}</h2>
+            <p>{{ episode.synopsis }}</p>
+        </div>
+    </div>
+
+    {# Afficher le formulaire de commentaire #}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h3 class="card-title">Ajouter un commentaire</h3>
+
+            {# Afficher les éventuels messages flash #}
+            {% for flash_message in app.flashes('success') %}
+                <div class="alert alert-success">{{ flash_message }}</div>
+            {% endfor %}
+
+            {# Afficher le formulaire de commentaire #}
+            {{ form_start(commentForm) }}
+            {{ form_widget(commentForm) }}
+            <button type="submit" class="btn btn-primary">Ajouter le commentaire</button>
+            {{ form_end(commentForm) }}
         </div>
     </div>
 
