@@ -206,31 +206,11 @@ class ProgramController extends AbstractController
         $episodeSlug = str_replace([' ', '_'], '-', $episodeSlug);
         $episode->setSlug($episodeSlug);
 
-        // Création d'une nouvelle instance de Comment
-        $comment = new Comment();
-
-        // Création du formulaire de commentaire
-        $commentForm = $this->createForm(CommentType::class, $comment);
-        $commentForm->handleRequest($request);
-
-        // Si le formulaire est soumis et valide, enregistrez le commentaire
-        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
-            // Associez le commentaire à l'auteur, à l'épisode et enregistrez-le en base de données
-            $comment->setAuthor($this->getUser());
-            $comment->setEpisode($episode);
-            $entityManager->persist($comment);
-            $entityManager->flush();
-
-            // Ajoutez un message flash pour indiquer que le commentaire a été ajouté avec succès
-            $this->addFlash('success', 'Votre commentaire a été ajouté avec succès.');
-        }
-
         // Rendre la vue avec le formulaire de commentaire
         return $this->render('program/episode_show.html.twig', [
             'program' => $program,
             'season' => $season,
             'episode' => $episode,
-            'commentForm' => $commentForm->createView(),
         ]);
     }
 }

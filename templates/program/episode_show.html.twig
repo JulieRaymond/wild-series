@@ -45,11 +45,6 @@
                 <div class="alert alert-success">{{ flash_message }}</div>
             {% endfor %}
 
-            {# Afficher le formulaire de commentaire #}
-            {{ form_start(commentForm) }}
-            {{ form_widget(commentForm) }}
-            <button type="submit" class="btn btn-primary">Ajouter le commentaire</button>
-            {{ form_end(commentForm) }}
         </div>
     </div>
 
