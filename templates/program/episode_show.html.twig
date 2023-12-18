@@ -34,6 +34,12 @@
                 {% for comment in episode.comments|reverse %}
                     <li>
                         {{ comment.author.email }} a dit : {{ comment.comment }}
+                        {% if app.user and (app.user == comment.author or is_granted('ROLE_ADMIN')) %}
+                            <form method="post" action="{{ path('program_comment_delete', {'id': comment.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_comment') }}" />
+                                <button type="submit" class="btn btn-danger btn-sm">Supprimer le commentaire</button>
+                            </form>
+                        {% endif %}
                     </li>
                 {% endfor %}
             </ul>

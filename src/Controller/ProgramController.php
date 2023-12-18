@@ -133,48 +133,6 @@ class ProgramController extends AbstractController
         ]);
     }
 
- /*   #[Route('/{slug}/season/{seasonId}/episode/{episodeSlug}', name: 'episode_show', methods: ['GET'])]
-    public function showEpisode(string $slug, int $seasonId, string $episodeSlug, ProgramRepository $programRepository, SluggerInterface $slugger): Response
-    {
-        $program = $programRepository->findOneBy(['slug' => $slug]);
-
-        if (!$program) {
-            throw $this->createNotFoundException(
-                'No program with slug: ' . $slug . ' found in program\'s table.'
-            );
-        }
-
-        $season = $program->getSeasons()->filter(function ($season) use ($seasonId) {
-            return $season->getId() == $seasonId;
-        })->first();
-
-        if (!$season) {
-            throw $this->createNotFoundException(
-                'No season with id: ' . $seasonId . ' found in program\'s seasons.'
-            );
-        }
-
-        $episode = $season->getEpisodes()->filter(function ($episode) use ($episodeSlug) {
-            return $episode->getSlug() == $episodeSlug;
-        })->first();
-
-        if (!$episode) {
-            throw $this->createNotFoundException(
-                'No episode with slug: ' . $episodeSlug . ' found in season\'s episodes.'
-            );
-        }
-
-        // Utilisation du SluggerInterface pour générer un slug à partir du titre de l'épisode
-        $episodeSlug = $slugger->slug($episode->getTitle())->lower();
-        $episodeSlug = str_replace([' ', '_'], '-', $episodeSlug);
-        $episode->setSlug($episodeSlug);
-
-        return $this->render('program/episode_show.html.twig', [
-            'program' => $program,
-            'season' => $season,
-            'episode' => $episode,
-        ]);
-    }*/
     #[Route('/{slug}/season/{seasonId}/episode/{episodeSlug}', name: 'episode_show', methods: ['GET', 'POST'])]
     public function showEpisode(string $slug, int $seasonId, string $episodeSlug, ProgramRepository $programRepository, Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, Security $security): Response
     {
@@ -238,5 +196,25 @@ class ProgramController extends AbstractController
             'episode' => $episode,
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/comment/{id}/delete', name: 'comment_delete', methods: ['POST'])]
+    public function deleteComment(Comment $comment, Security $security, EntityManagerInterface $entityManager): Response
+    {
+        // Vérifier si l'utilisateur a le droit de supprimer le commentaire
+        if (!($security->isGranted('ROLE_ADMIN') || ($security->isGranted('ROLE_CONTRIBUTOR') && $security->getUser() === $comment->getAuthor()))) {
+            throw $this->createAccessDeniedException('Vous n\'avez pas le droit de supprimer ce commentaire.');
+        }
+
+        // Supprimer le commentaire de la base de données
+        $entityManager->remove($comment);
+        $entityManager->flush();
+
+        // Ajouter un message flash de succès
+        $this->addFlash('success', 'Le commentaire a bien été supprimé.');
+
+        // Rediriger vers la page du programme associé à l'épisode
+        $programSlug = $comment->getEpisode()->getSeason()->getProgram()->getSlug();
+        return $this->redirectToRoute('program_show', ['slug' => $programSlug]);
     }
 }
