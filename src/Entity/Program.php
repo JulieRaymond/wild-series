@@ -63,6 +63,9 @@ class Program
     #[ORM\Column(length: 255, nullable: false)]
     private ?string $slug = "exemple";
 
+    #[ORM\ManyToOne(inversedBy: 'programs')]
+    private ?User $owner = null;
+
 
     public function __construct()
     {
@@ -221,6 +224,18 @@ class Program
     public function getPosterFile(): ?File
     {
         return $this->posterFile;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
+
+        return $this;
     }
 
 }
