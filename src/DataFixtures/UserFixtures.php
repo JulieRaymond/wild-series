@@ -45,6 +45,8 @@ class UserFixtures extends Fixture
 
         // Sauvegarde des 2 nouveaux utilisateurs :
         $manager->flush();
+
+        $this->addReference('admin@monsite.com', $admin);
     }
 
 }
