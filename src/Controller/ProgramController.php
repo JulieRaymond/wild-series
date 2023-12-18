@@ -8,6 +8,7 @@ use App\Form\ProgramType;
 use App\Repository\ProgramRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -171,7 +172,7 @@ class ProgramController extends AbstractController
         ]);
     }*/
     #[Route('/{slug}/season/{seasonId}/episode/{episodeSlug}', name: 'episode_show', methods: ['GET', 'POST'])]
-    public function showEpisode(string $slug, int $seasonId, string $episodeSlug, ProgramRepository $programRepository, Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function showEpisode(string $slug, int $seasonId, string $episodeSlug, ProgramRepository $programRepository, Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, Security $security): Response
     {
         $program = $programRepository->findOneBy(['slug' => $slug]);
 
@@ -206,11 +207,32 @@ class ProgramController extends AbstractController
         $episodeSlug = str_replace([' ', '_'], '-', $episodeSlug);
         $episode->setSlug($episodeSlug);
 
+
+        //commentaire
+        $comment = new Comment();
+        $comment->setEpisode($episode);
+
+        // Si l'utilisateur est connecté, renseignez automatiquement l'auteur
+        if ($security->getUser()) {
+            $comment->setAuthor($security->getUser());
+        }
+
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Traitement du formulaire
+            $entityManager->persist($comment);
+            $entityManager->flush();
+            $this->addFlash('success', 'Commentaire ajouté avec succès.');
+        }
+
         // Rendre la vue avec le formulaire de commentaire
         return $this->render('program/episode_show.html.twig', [
             'program' => $program,
             'season' => $season,
             'episode' => $episode,
+            'form' => $form->createView(),
         ]);
     }
 }
