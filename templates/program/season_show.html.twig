@@ -7,7 +7,6 @@
 {% block body %}
     <div class="card mb-3">
         <div class="card-body">
-{#            <img class="card-img align-self-start mr-3" src="{{ program.poster }}" alt="{{ program.title }} poster">#}
             <img class="card-img align-self-start mr-3" alt="image" src="{{ vich_uploader_asset(program) }}">
             <div class="media-body">
                 <h1 class="series-title mt-0">{{ program.title }} - Saison {{ season.number }}</h1>
@@ -26,6 +25,21 @@
                     </a>
                 </h2>
                 <p class="card-text">{{ episode.synopsis }}</p>
+
+                {# Afficher les commentaires associés à l'épisode #}
+                {% if episode.comments is not empty %}
+                    <div class="comments-section">
+                        <h3>Commentaires</h3>
+                        <ul>
+                            {% for comment in episode.comments|reverse %}
+                                <li>
+                                    <strong>{{ comment.author.email }}</strong>
+                                    <p>{{ comment.comment }}</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
         </div>
     {% endfor %}

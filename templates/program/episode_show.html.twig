@@ -10,8 +10,35 @@
             <h1 class="series-title">{{ program.title }} - Saison {{ season.number }} - Épisode {{ episode.number }}</h1>
             <h2 class="card-title">{{ episode.title }}</h2>
             <p>{{ episode.synopsis }}</p>
+
+            {# Afficher le formulaire de commentaire si l'utilisateur est connecté #}
+            {% if app.user %}
+                {{ form_start(form) }}
+                {{ form_row(form.rate) }}
+                {{ form_row(form.comment) }}
+                {{ form_row(form.author) }}
+                {{ form_row(form._token) }}
+                <button type="submit">Ajouter un commentaire</button>
+                {{ form_end(form) }}
+            {% endif %}
         </div>
     </div>
+
+    {# Afficher les commentaires s'il y en a #}
+    {% if episode.comments|length > 0 %}
+        <div class="card">
+            <div class="card-header">
+                Commentaires
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for comment in episode.comments|reverse %}
+                    <li>
+                        {{ comment.author.email }} a dit : {{ comment.comment }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 
     <a href="{{ path('program_season_show', {'slug': program.slug, 'seasonId': season.id}) }}" class="btn btn-secondary">
         Retour à la saison
