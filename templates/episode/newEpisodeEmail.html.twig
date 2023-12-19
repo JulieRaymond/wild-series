@@ -1,0 +1,17 @@
+{% extends 'baseEmail.html.twig' %}
+{% block title %}
+    Nouvel épisode ajouté
+{% endblock %}
+
+{% block body %}
+    <h1>Votre nouvel épisode {{ episode.title }} a été créé.</h1>
+    <p>Bonjour, votre nouvel épisode {{ episode.title }} a bien été créé sur le site Wild Series.</p>
+    <p>Synopsis : {{episode.synopsis }}</p>
+    <p>
+        Cet épisode appartient à la série : {{ program.title }}.<br><br>
+        Retrouvez tous les épisodes de cette série sur la page :
+        <a href="{{ path('program_episode_show', {'slug': program.slug, 'seasonId': episode.season.id, 'episodeSlug': episode.slug}) }}">
+            Épisodes de la série
+        </a>
+    </p>
+{% endblock %}
