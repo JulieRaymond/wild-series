@@ -26,7 +26,9 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
         $categoryHorror = $this->getReference('category_Horreur');
         $categorySciFi = $this->getReference('category_Science-fiction');
 
-        // Créer des instances de Program avec différentes catégories et les URL des posters
+        $admin = $this->getReference('admin@monsite.com');
+
+        // Créer des instances de program avec différentes catégories et les URL des posters
         $programsData = [
             ['title' => 'Walking Dead', 'synopsis' => 'Des zombies envahissent la terre', 'category' => $categoryHorror, 'poster' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3XFRQrxoEU1U88IHEEUcPTHYwVetHiaI0fA8L9CD98_E6fJiJ3e_IK-X17BbHdsEo5f8&usqp=CAU'],
             ['title' => 'Breaking Bad', 'synopsis' => 'Un professeur de chimie devient trafiquant de méthamphétamine', 'category' => $categoryDrama, 'poster' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7x2UNKLMUDSyNeg21WWY2vKm02PlZgtLd11oLAAiBGhBiPOWmCMVQW-QtV61CAmCzWJg&usqp=CAU'],
@@ -46,6 +48,8 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
             $slug = $this->slugger->slug($program->getTitle())->lower();
             $slug = str_replace(' ', '-', $slug);
             $program->setSlug($slug);
+
+            $program->setOwner($admin);
 
             $manager->persist($program);
         }

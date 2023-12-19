@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des acteurs{% endblock %}
+
+{% block body %}
+    <h1>Liste de tous les acteurs </h1>
+    {% for actor in actors %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <img class="card-img" alt="image" src="{{ vich_uploader_asset(actor) }}">
+                <h2 class="card-title">{{ actor.name }} </h2>
+                <a href="{{ path("actor_show", { slug: actor.slug }) }}" class="btn btn-primary">Voir la fiche</a>
+                <a href="{{ path("actor_app_actor_edit", { slug: actor.slug }) }}" class="btn btn-warning">Éditer</a>
+                <a href="{{ path("actor_app_actor_delete", { slug: actor.slug }) }}" class="btn btn-danger" onclick="event.preventDefault(); if (confirm('Etes vous sur de vouloir supprimer cet acteur ?')) { document.getElementById('delete-form-{{ actor.slug }}').submit(); }">Supprimer</a>
+                <form id="delete-form-{{ actor.slug }}" action="{{ path("actor_app_actor_delete", { slug: actor.slug }) }}" method="post" style="display: none;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ actor.slug) }}">
+                </form>
+            </div>
+        </div>
+    {% else %}
+        Aucun acteur trouvé.
+    {% endfor %}
+{% endblock %}

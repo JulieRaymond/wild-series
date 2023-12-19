@@ -11,6 +11,7 @@ use App\Repository\ProgramRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\CategoryType;
 use App\Entity\Category;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/category', name: 'category_')]
 class CategoryController extends AbstractController
@@ -24,7 +25,7 @@ class CategoryController extends AbstractController
             'categories' => $categories,
         ]);
     }
-
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/new', name: 'new')]
     public function new(Request $request, EntityManagerInterface $entityManager) : Response
     {

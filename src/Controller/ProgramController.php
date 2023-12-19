@@ -8,6 +8,7 @@ use App\Form\ProgramType;
 use App\Repository\ProgramRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -16,6 +17,8 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Service\ProgramDuration;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
+use App\Entity\Comment;
+use App\Form\CommentType;
 
 #[Route('/program', name: 'program_')]
 class ProgramController extends AbstractController
@@ -79,6 +82,45 @@ class ProgramController extends AbstractController
         ]);
     }
 
+    #[Route('/{slug}/edit', name: 'app_program_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Program $program, EntityManagerInterface $entityManager): Response
+    {
+        // Ajoute la vérification de propriété du programme
+        if ($this->getUser() !== $program->getOwner()) {
+            throw $this->createAccessDeniedException('Seul le propriétaire peut modifier la série !');
+        }
+        $form = $this->createForm(ProgramType::class, $program);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            // Message Flash de succès
+            $this->addFlash('success', 'Bravo ! La série a été éditée avec succès.');
+
+            return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('program/edit.html.twig', [
+            'program' => $program,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/{slug}/delete', name: 'app_program_delete', methods: ['POST'])]
+    public function delete(Request $request, Program $program, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$program->getSlug(), $request->request->get('_token'))) {
+            $entityManager->remove($program);
+            $entityManager->flush();
+
+            // Message Flash de danger
+            $this->addFlash('danger', 'La série a bien été supprimée.');
+        }
+
+        return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
+    }
+
     #[Route('/{slug}/season/{seasonId}', name: 'season_show', methods: ['GET'])]
     public function showSeason(string $slug, int $seasonId, ProgramRepository $programRepository): Response
     {
@@ -106,8 +148,8 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    #[Route('/{slug}/season/{seasonId}/episode/{episodeSlug}', name: 'episode_show', methods: ['GET'])]
-    public function showEpisode(string $slug, int $seasonId, string $episodeSlug, ProgramRepository $programRepository, SluggerInterface $slugger): Response
+    #[Route('/{slug}/season/{seasonId}/episode/{episodeSlug}', name: 'episode_show', methods: ['GET', 'POST'])]
+    public function showEpisode(string $slug, int $seasonId, string $episodeSlug, ProgramRepository $programRepository, Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, Security $security): Response
     {
         $program = $programRepository->findOneBy(['slug' => $slug]);
 
@@ -142,11 +184,52 @@ class ProgramController extends AbstractController
         $episodeSlug = str_replace([' ', '_'], '-', $episodeSlug);
         $episode->setSlug($episodeSlug);
 
+
+        //commentaire
+        $comment = new Comment();
+        $comment->setEpisode($episode);
+
+        // Si l'utilisateur est connecté, renseignez automatiquement l'auteur
+        if ($security->getUser()) {
+            $comment->setAuthor($security->getUser());
+        }
+
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Traitement du formulaire
+            $entityManager->persist($comment);
+            $entityManager->flush();
+            $this->addFlash('success', 'Commentaire ajouté avec succès.');
+        }
+
+        // Rendre la vue avec le formulaire de commentaire
         return $this->render('program/episode_show.html.twig', [
             'program' => $program,
             'season' => $season,
             'episode' => $episode,
+            'form' => $form->createView(),
         ]);
     }
 
+    #[Route('/comment/{id}/delete', name: 'comment_delete', methods: ['POST'])]
+    public function deleteComment(Comment $comment, Security $security, EntityManagerInterface $entityManager): Response
+    {
+        // Vérifier si l'utilisateur a le droit de supprimer le commentaire
+        if (!($security->isGranted('ROLE_ADMIN') || ($security->isGranted('ROLE_CONTRIBUTOR') && $security->getUser() === $comment->getAuthor()))) {
+            throw $this->createAccessDeniedException('Vous n\'avez pas le droit de supprimer ce commentaire.');
+        }
+
+        // Supprimer le commentaire de la base de données
+        $entityManager->remove($comment);
+        $entityManager->flush();
+
+        // Ajouter un message flash de succès
+        $this->addFlash('success', 'Le commentaire a bien été supprimé.');
+
+        // Rediriger vers la page du programme associé à l'épisode
+        $programSlug = $comment->getEpisode()->getSeason()->getProgram()->getSlug();
+        return $this->redirectToRoute('program_show', ['slug' => $programSlug]);
+    }
 }

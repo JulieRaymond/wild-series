@@ -31,7 +31,7 @@ a {
 }
 
 main{
-  min-height: 100vh;
+  //min-height: 100vh;
   text-align: center;
 }
 
@@ -188,7 +188,7 @@ main{
 
 .element.text {
   position: relative;
-  background-image: url('/public/build/images/tv.jpg');
+  //background-image: url('/public/build/images/tv.jpg');
   background-size: cover;
   color: #ffffff;
   padding: 45px;
@@ -204,7 +204,7 @@ main{
 }
 
 .card-img{
-  height:170px;
+  height:220px;
   width:300px;
 }
 

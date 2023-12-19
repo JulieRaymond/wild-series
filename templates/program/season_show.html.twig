@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ program.title }} - Saison {{ season.number }}
+{% endblock %}
+
+{% block body %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <img class="card-img align-self-start mr-3" alt="image" src="{{ vich_uploader_asset(program) }}">
+            <div class="media-body">
+                <h1 class="series-title mt-0">{{ program.title }} - Saison {{ season.number }}</h1>
+                <p>{{ season.description }}</p>
+                <p>Année de sortie : {{ season.year }}</p>
+            </div>
+        </div>
+    </div>
+
+    {% for episode in season.episodes %}
+        <div class="card mb-3">
+            <div class="card-bodyEpisode">
+                <h2 class="card-title">
+                    <a href="{{ url('program_episode_show', {'slug': program.slug, 'seasonId': season.id, 'episodeSlug': episode.slug}) }}">
+                        Épisode {{ episode.number }} - {{ episode.title }}
+                    </a>
+                </h2>
+                <p class="card-text">{{ episode.synopsis }}</p>
+
+                {# Afficher les commentaires associés à l'épisode #}
+                {% if episode.comments is not empty %}
+                    <div class="comments-section">
+                        <h3>Commentaires</h3>
+                        <ul>
+                            {% for comment in episode.comments|reverse %}
+                                <li>
+                                    <strong>{{ comment.author.email }}</strong>
+                                    <p>{{ comment.comment }}</p>
+                                    {% if app.user and (app.user == comment.author or is_granted('ROLE_ADMIN')) %}
+                                        <form method="post" action="{{ path('program_comment_delete', {'id': comment.id}) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_comment') }}" />
+                                            <button type="submit" class="btn btn-danger btn-sm">Supprimer le commentaire</button>
+                                        </form>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+
+    <a href="{{ path('program_show', {'slug': program.slug}) }}" class="btn btn-secondary">
+        Retour à la série
+    </a>
+{% endblock %}
