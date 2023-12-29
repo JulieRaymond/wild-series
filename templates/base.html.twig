@@ -12,10 +12,13 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
-    <body>
+
+    <body {{ stimulus_controller('theme') }} {{ stimulus_target('theme', 'body') }}>
+        <button {{ stimulus_action('theme', 'toggleDarkMode') }}>Toggle dark mode</button>
         <header>
-        {% include '_navbar.html.twig' %}
+            {% include '_navbar.html.twig' %}
         </header>
+
         <main>
 
             {% for message in app.flashes('success') %}
