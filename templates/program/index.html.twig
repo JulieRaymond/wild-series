@@ -4,7 +4,13 @@
 
 {% block body %}
     <h1 class="series-title">Toutes les séries</h1>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    {{ form_end(form) }}
+
     <a href="{{ path('program_new') }}" class="btn btn-success">Ajouter une série</a>
+
     {% for program in programs %}
         <div class="card mb-3">
             <div class="card-body">
@@ -13,6 +19,7 @@
                 <h3 class="card-category"> Catégorie : {{ program.category.name }}</h3>
                 <p class="card-text">{{ program.synopsis }}</p>
                 <a href="{{ path("program_show", { slug: program.slug }) }}" class="btn btn-primary">Voir la fiche</a>
+                <p class="card-text">Acteurs: {% for actor in program.actors %}{{ actor.name }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
                 {#EDITION#}
                 {% if is_granted("ROLE_ADMIN") %}
                     <a class="btn btn-warning" href="{{ path('program_app_program_edit', { 'slug': program.slug} ) }}">Éditer</a>

@@ -20,29 +20,28 @@ class ProgramRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Program::class);
     }
+    /*public function findLikeName(string $name)
+    {
+        $queryBuilder = $this->createQueryBuilder('p')
+            ->where('p.title LIKE :name')
+            ->setParameter('name', '%' . $name . '%')
+            ->orderBy('p.title', 'ASC')
+            ->getQuery();
 
-//    /**
-//     * @return program[] Returns an array of program objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+        return $queryBuilder->getResult();
+    }*/
+    public function findLikeName(string $name)
+    {
+        $queryBuilder = $this->createQueryBuilder('p')
+            ->leftJoin('p.actors', 'a') // jointure avec la table des acteurs
+            ->where('p.title LIKE :name')
+            ->orWhere('a.name LIKE :actorName') // condition sur le nom de l'acteur
+            ->setParameter('name', '%' . $name . '%')
+            ->setParameter('actorName', '%' . $name . '%')
+            ->orderBy('p.title', 'ASC')
+            ->getQuery();
 
-//    public function findOneBySomeField($value): ?program
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        return $queryBuilder->getResult();
+    }
+
 }
