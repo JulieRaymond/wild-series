@@ -31,7 +31,7 @@ a {
 }
 
 main{
-  //min-height: 100vh;
+  flex:auto;
   text-align: center;
 }
 
@@ -262,4 +262,43 @@ main{
 .actors-list{
   text-align: center;
   padding:0;
+}
+
+.btn-navbar{
+  margin : 0 0;
+}
+
+aside {
+  width: 19rem;
+  background-color: var(--dark-green);
+  color: var(--white);
+}
+
+.card {
+  margin-bottom: 15px; /* Espacement entre chaque carte */
+  border: none; /* Supprimer la bordure */
+}
+
+.card-body {
+  padding: 10px; /* Espacement interne dans chaque carte */
+}
+
+.btn-primary {
+  font-size: 14px; /* Taille du texte du bouton */
+  padding: 5px 10px; /* Espacement à l'intérieur du bouton */
+}
+
+.card-title {
+  font-size: 18px; /* Taille du titre de la carte */
+}
+
+.card-text {
+  font-size: 14px; /* Taille du texte de la carte */
+}
+
+.d-flex {
+  display: flex !important;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
 }
