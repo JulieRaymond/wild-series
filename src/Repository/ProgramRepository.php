@@ -30,7 +30,7 @@ class ProgramRepository extends ServiceEntityRepository
 
         return $queryBuilder->getResult();
     }*/
-    public function findLikeName(string $name)
+    /*public function findLikeName(string $name)
     {
         $queryBuilder = $this->createQueryBuilder('p')
             ->leftJoin('p.actors', 'a') // jointure avec la table des acteurs
@@ -42,6 +42,21 @@ class ProgramRepository extends ServiceEntityRepository
             ->getQuery();
 
         return $queryBuilder->getResult();
+    }*/
+    public function findLikeName(string $name): array
+    {
+        $result = [];
+
+        if (!empty($name)) {
+            $result = $this->createQueryBuilder('p')
+                ->andWhere('p.title LIKE :name')
+                ->setParameter('name', '%' . $name . '%')
+                ->orderBy('p.title', 'ASC')
+                ->getQuery()
+                ->getResult();
+        }
+
+        return $result;
     }
 
 }
