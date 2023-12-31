@@ -1,0 +1,21 @@
+<div{{ attributes }}>
+    <!-- component html -->
+    <div class="mb-3">
+        <label class="form-label" for="search">
+            Cherchez une série dans notre catalogue
+        </label>
+        <input type="search"
+               id="search"
+               class="form-control"
+               value="{{ query }}"
+               data-model="query">
+    </div>
+    {% for program in this.programs %}
+        <div>
+            <p> {{ program.id }} / {{ program.title }} -
+                Catégorie: {{ program.category.name }}</p>
+            <p>{{ program.synopsis }}</p>
+            <a href="{{ path("program_show", { slug: program.slug }) }}"> Voir plus </a>
+        </div>
+    {% endfor %}
+</div>
